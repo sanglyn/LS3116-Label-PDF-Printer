@@ -49,31 +49,13 @@ https://sanglyn.github.io/LS3116-Label-PDF-Printer/
 * 최대 **40페이지 확장 가능**
 
 ## 5. 오프셋(Offset) 조정 기능
-* 트랙스로지스, 쇼피SLS용 preset 지원
-* 
-### 전체 오프셋
 
-[
-\Delta X_\text{sheet},; \Delta Y_\text{sheet}
-]
-
-### 전체 칸 오프셋
-
-[
-\Delta X_\text{bulk},; \Delta Y_\text{bulk},;
-S_\text{bulk}( % )
-]
-
-### 칸별 세부 조정
-
-[
-\Delta X_{i},; \Delta Y_{i},; S_i(%)
-\qquad (i = 1\ldots6)
-]
+* 전체 오프셋
+* 칸별 세부 조정
 
 ### 프리셋 제공
 
-* 트랙스로지스
+* 트랙스로지스(TracxLogis)
 * Shopee SLS
 
 ## 6. PDF 생성 (pdf-lib 기반)
