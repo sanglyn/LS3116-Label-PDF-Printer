@@ -4,6 +4,8 @@
 
 본 프로젝트는 완전한 **Client-Side Web App**이며, 정적 호스팅에서 즉시 실행됩니다.
 
+https://github.com/sanglyn/LS3116-Label-PDF-Printer
+
 ---
 
 ## 📦 Files
