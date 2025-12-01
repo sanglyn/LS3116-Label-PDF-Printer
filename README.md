@@ -2,6 +2,8 @@
 
 ### **Formtec LS-3116 (A4 / 2×3) 라벨용지에 여러 PDF 라벨을 자동·정밀 배치하는 웹 앱**
 
+publish: https://sanglyn.github.io/LS3116-Label-PDF-Printer/
+
 ---
 
 ## 🚀 프로젝트 목적
