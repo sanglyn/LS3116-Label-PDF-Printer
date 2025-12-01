@@ -1,4 +1,4 @@
-<!-- Ver 0.1 -->
+<!-- Ver 0.4 -->
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,16 +14,25 @@
   <div class="app-shell">
     <!-- 헤더 -->
     <header class="app-header">
-      <div class="app-title">
-        <span class="app-logo">폼텍 LS-3116</span>
-        <span class="app-subtitle">Label PDF Printer</span>
+    <div class="app-title">
+
+      <!-- 로고 / 버전 박스 -->
+      <div class="app-logo">
+        <span class="logo-box">
+          Label PDF Printer <span class="app-version">v0.4</span>
+        </span>
       </div>
-      <div class="app-header-actions">
-        <button id="helpBtn" type="button" class="icon-button" title="도움말">
-          ?
-        </button>
-      </div>
-    </header>
+
+      <!-- 서브 타이틀 (logo-box 바깥) -->
+      <div class="app-subtitle">Formtec LS-3116 A4 Portrait Label Layout</div>
+
+    </div>
+
+    <div class="app-header-actions">
+      <button id="helpBtn" type="button" class="icon-button" title="도움말">?</button>
+    </div>
+  </header>
+
 
     <!-- 메인 콘텐츠 -->
     <main class="app-main">
@@ -305,7 +314,7 @@
           <li>각 페이지는 2×3 레이아웃이며, 한 화면에 최대 4페이지의 보드가 표시됩니다.</li>
           <li>칸을 드래그 & 드랍해서 같은 페이지 또는 현재 화면에 보이는 다른 페이지의 칸으로 이동 / 교환할 수 있습니다.</li>
           <li>페이지 보드에서 파일이 들어간 칸을 클릭해 선택한 뒤, 빈 칸을 클릭하거나 드래그 &amp; 드랍으로 다른 칸으로 이동/교환할 수 있습니다. (채워진 칸끼리의 교환은 드래그 &amp; 드랍으로만 가능합니다.)</li>
-          <li>+ 페이지 버튼으로 최대 10페이지까지 새 페이지를 추가할 수 있습니다.</li>
+          <li>+ 페이지 버튼으로 새 페이지를 추가할 수 있습니다.</li>
           <li>오프셋 프리셋(트랙스로지스 / 쇼피SLS)을 사용한 뒤, 세부 오프셋 (고급)에서 칸별 위치·축소를 미세 조정하세요.</li>
         </ul>
       </div>

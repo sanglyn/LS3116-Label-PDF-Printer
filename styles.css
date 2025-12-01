@@ -1,4 +1,4 @@
-/*Ver 0.1 */
+/*Ver 0.4 */
 
 :root {
   --bg-body: #f3f4f6;
@@ -56,19 +56,39 @@ body {
   gap: 2px;
 }
 
+/* app-logo는 이제 그냥 래퍼 역할만 */
 .app-logo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  background: rgba(37, 99, 235, 0.08);
+  display: block;    /* 또는 inline-block, 어느 쪽이든 OK */
+  padding: 0;
+  margin: 0;
+  background: none;
+  border-radius: 0;
+}
+
+/* 상단 로고 박스 (텍스트 폭에 딱 맞게) */
+.logo-box {
+  background: rgba(37, 99, 235, 0.08);  /* 기존 app-logo 배경 옮기기 */
   color: var(--accent-strong);
+  padding: 4px 10px;                    /* 여기는 조금 여유 있게 */
+  border-radius: var(--radius-pill);
+  font-size: 20px;
   font-weight: 700;
-  font-size: 13px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+
+  display: inline-flex;                 /* 텍스트 길이에 맞게 */
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
+
+/* 버전 텍스트는 살짝 약한 톤으로 */
+.app-version {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-sub);
+}
+
 
 .app-subtitle {
   font-size: 18px;
@@ -823,4 +843,39 @@ button {
   .page-board {
     flex: 1 1 100%;
   }
+}
+
+
+
+/* "모든 칸에 x,y 적용" 버튼: 파란색 프라이머리 스타일 */
+#applyBulkSlotOffsetBtn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;   /* ⭐ 텍스트 중앙 정렬 핵심 */
+  gap: 6px;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+#applyBulkSlotOffsetBtn:hover {
+  background: var(--accent-strong);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
+}
+
+#applyBulkSlotOffsetBtn:active {
+  transform: scale(0.96) translateY(1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
 }
