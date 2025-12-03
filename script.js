@@ -1,5 +1,5 @@
 /**
- * Label PDF Printer v0.5
+ * Label PDF Printer v0.6
  * - LS-3116(2x3), LS-3114(2x4) 레이아웃 선택
  * - PDF 페이지 단위 가상 파일로 분해 후 슬롯 배정
  * - 드래그&드롭 / 클릭 이동
@@ -8,6 +8,7 @@
  *   - ORIGINAL: PDF 원본 크기 존중 (텍스트/바코드 크기 우선)
  *   - FIT_WIDTH: 라벨 가로폭에 맞게 비율 유지
  * - clipToSlot(안전 모드): 슬롯 밖으로 튀어나가지 않도록 자동 축소
+ * - 슬롯 밖으로 나갔을때 자르기 옵션
  */
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -67,6 +68,8 @@ window.addEventListener("DOMContentLoaded", () => {
   let scaleMode = SCALE_MODES.ORIGINAL;
   // 슬롯 밖으로 나가지 않도록 자동 축소 옵션
   let clipToSlot = false;
+  // 슬롯 경계에서 자르기 옵션 (기본값: true - 경계 밖 내용 제거)
+  let clipAtBoundary = true;
 
   // -----------------------------
   //  상태값
@@ -134,6 +137,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const scaleModeRadios = document.querySelectorAll('input[name="scaleMode"]');
   const clipToSlotInput = document.getElementById("clipToSlot");
+  const clipAtBoundaryInput = document.getElementById("clipAtBoundary");
 
   const helpBtn = document.getElementById("helpBtn");
   const helpModal = document.getElementById("helpModal");
@@ -398,6 +402,12 @@ window.addEventListener("DOMContentLoaded", () => {
     if (clipToSlotInput) {
       clipToSlotInput.addEventListener("change", (e) => {
         clipToSlot = e.target.checked;
+      });
+    }
+
+    if (clipAtBoundaryInput) {
+      clipAtBoundaryInput.addEventListener("change", (e) => {
+        clipAtBoundary = e.target.checked;
       });
     }
   }
@@ -1001,12 +1011,32 @@ window.addEventListener("DOMContentLoaded", () => {
             const finalX = slotBaseX;                      // 좌측 정렬
             const finalY = slotBaseY + (slotH - renderH);  // 상단 정렬
 
+            // 슬롯 경계에서 클리핑 옵션
+            if (clipAtBoundary) {
+              // PDF 클리핑 경로 설정 (슬롯 영역만 표시)
+              page.pushOperators(
+                PDFLib.pushGraphicsState(),
+                PDFLib.moveTo(slotBaseX, slotBaseY),
+                PDFLib.lineTo(slotBaseX + slotW, slotBaseY),
+                PDFLib.lineTo(slotBaseX + slotW, slotBaseY + slotH),
+                PDFLib.lineTo(slotBaseX, slotBaseY + slotH),
+                PDFLib.closePath(),
+                PDFLib.clip(),
+                PDFLib.endPath()
+              );
+            }
+
             page.drawPage(embeddedPage, {
               x: finalX,
               y: finalY,
               width: renderW,
               height: renderH
             });
+
+            if (clipAtBoundary) {
+              // 그래픽 상태 복원
+              page.pushOperators(PDFLib.popGraphicsState());
+            }
 
           } else if (scaleMode === SCALE_MODES.FIT_WIDTH) {
             // 기본: 라벨 가로폭에 맞게 비율 유지
@@ -1026,12 +1056,32 @@ window.addEventListener("DOMContentLoaded", () => {
             const finalX = slotBaseX;                      // 좌측 정렬
             const finalY = slotBaseY + (slotH - renderH);  // 상단 정렬
 
+            // 슬롯 경계에서 클리핑 옵션
+            if (clipAtBoundary) {
+              // PDF 클리핑 경로 설정 (슬롯 영역만 표시)
+              page.pushOperators(
+                PDFLib.pushGraphicsState(),
+                PDFLib.moveTo(slotBaseX, slotBaseY),
+                PDFLib.lineTo(slotBaseX + slotW, slotBaseY),
+                PDFLib.lineTo(slotBaseX + slotW, slotBaseY + slotH),
+                PDFLib.lineTo(slotBaseX, slotBaseY + slotH),
+                PDFLib.closePath(),
+                PDFLib.clip(),
+                PDFLib.endPath()
+              );
+            }
+
             page.drawPage(embeddedPage, {
               x: finalX,
               y: finalY,
               width: renderW,
               height: renderH
             });
+
+            if (clipAtBoundary) {
+              // 그래픽 상태 복원
+              page.pushOperators(PDFLib.popGraphicsState());
+            }
           }
         }
 
