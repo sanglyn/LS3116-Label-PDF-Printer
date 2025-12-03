@@ -1,10 +1,10 @@
-<!-- Ver 0.4 -->
+<!-- Ver 0.5 -->
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>LS-3116 라벨 PDF 생성기</title>
+  <title>Label PDF Printer</title>
   <link rel="stylesheet" href="styles.css" />
   <!-- pdf-lib CDN -->
   <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
@@ -14,40 +14,107 @@
   <div class="app-shell">
     <!-- 헤더 -->
     <header class="app-header">
-    <div class="app-title">
-
-      <!-- 로고 / 버전 박스 -->
-      <div class="app-logo">
-        <span class="logo-box">
-          Label PDF Printer <span class="app-version">v0.4</span>
-        </span>
+      <div class="app-title">
+        <!-- 로고 / 버전 박스 -->
+        <div class="app-logo">
+          <span class="logo-box">
+            Label PDF Printer <span class="app-version">v0.5</span>
+          </span>
+        </div>
+        <!-- 서브 타이틀 -->
+        <div class="app-subtitle">
+          Formtec LS-3116 / LS-3114 A4 Portrait Label Layout Helper
+        </div>
       </div>
 
-      <!-- 서브 타이틀 (logo-box 바깥) -->
-      <div class="app-subtitle">Formtec LS-3116 A4 Portrait Label Layout</div>
+      <div class="app-header-actions">
+        <button id="helpBtn" type="button" class="icon-button" title="도움말">?</button>
+      </div>
+    </header>
 
-    </div>
-
-    <div class="app-header-actions">
-      <button id="helpBtn" type="button" class="icon-button" title="도움말">?</button>
-    </div>
-  </header>
-
-
-    <!-- 메인 콘텐츠 -->
+    <!-- 메인 -->
     <main class="app-main">
-      <!-- 1. 업로드 & 파일 관리 -->
-      <section class="card">
+      <!-- 1단계: 라벨 용지 선택 -->
+      <section class="card" id="cardLayoutSelect">
         <div class="card-header">
-          <h1>1. PDF 업로드</h1>
-          <span class="card-caption">LS-3116 라벨에 배치할 PDF를 추가하세요. (업로드 개수 제한 없음)</span>
+          <div>
+            <h1>1. 라벨 용지 선택</h1>
+            <span class="card-caption">
+              사용할 Formtec 라벨 용지(2×3 / 2×4)를 먼저 선택해주세요.
+            </span>
+          </div>
+          <button type="button" class="card-toggle-btn" data-target="cardLayoutSelect">
+            <span class="toggle-icon">▼</span>
+          </button>
         </div>
+        <div class="card-body">
+
+        <div class="layout-picker-grid">
+          <!-- LS3116 -->
+          <label class="layout-card" data-layout="LS3116">
+            <input type="radio" name="layoutSelect" value="LS3116" checked />
+            <div class="layout-card-body">
+              <div class="layout-card-title">LS-3116</div>
+              <div class="layout-card-mini ls3116-mini">
+                <div class="mini-row"><span class="mini-box"></span><span class="mini-box"></span></div>
+                <div class="mini-row"><span class="mini-box"></span><span class="mini-box"></span></div>
+                <div class="mini-row"><span class="mini-box"></span><span class="mini-box"></span></div>
+              </div>
+              <div class="layout-card-info">
+                2 × 3 Layout<br>
+                Label: 99.1 × 93.1 mm<br>
+                총 6칸
+              </div>
+            </div>
+          </label>
+
+          <!-- LS3114 -->
+          <label class="layout-card" data-layout="LS3114">
+            <input type="radio" name="layoutSelect" value="LS3114" />
+            <div class="layout-card-body">
+              <div class="layout-card-title">LS-3114</div>
+              <div class="layout-card-mini ls3114-mini">
+                <div class="mini-row"><span class="mini-box"></span><span class="mini-box"></span></div>
+                <div class="mini-row"><span class="mini-box"></span><span class="mini-box"></span></div>
+                <div class="mini-row"><span class="mini-box"></span><span class="mini-box"></span></div>
+                <div class="mini-row"><span class="mini-box"></span><span class="mini-box"></span></div>
+              </div>
+              <div class="layout-card-info">
+                2 × 4 Layout<br>
+                Label: 99.1 × 67.7 mm<br>
+                총 8칸
+              </div>
+            </div>
+          </label>
+        </div>
+
+
+        </div>
+      </section>
+
+      <!-- 2단계: PDF 업로드 -->
+      <section class="card" id="cardUpload">
+        <div class="card-header">
+          <div>
+            <h2>2. PDF 업로드</h2>
+            <span class="card-caption">
+              개별 패킹 라벨 PDF 또는 복수 페이지 PDF(페이지별 자동 분할)를 업로드하세요.
+            </span>
+          </div>
+          <button type="button" class="card-toggle-btn" data-target="cardUpload">
+            <span class="toggle-icon">▼</span>
+          </button>
+        </div>
+        <div class="card-body">
 
         <div id="dropZone" class="drop-zone">
           <div class="drop-zone-inner">
             <div class="drop-zone-icon">📄</div>
             <div class="drop-zone-text-main">PDF를 드래그하거나 클릭해서 업로드</div>
-            <div class="drop-zone-text-sub">배송 라벨, 인보이스 등 필요한 PDF를 자유롭게 추가할 수 있습니다.</div>
+            <div class="drop-zone-text-sub">
+              배송 라벨, 인보이스 등 여러 개의 PDF를 한 번에 올려도 됩니다.
+              (페이지 단위로 자동 분리)
+            </div>
           </div>
         </div>
         <input
@@ -74,201 +141,202 @@
           <thead>
             <tr>
               <th style="width:40px;">#</th>
-              <th>파일명</th>
+              <th>파일명 (페이지 단위)</th>
               <th style="width:150px;">배정 위치</th>
               <th style="width:70px;">삭제</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
+        </div>
       </section>
 
-      <!-- 2. 페이지 / 라벨 배치 -->
-      <section class="card">
+      <!-- 3단계: 라벨 배치 -->
+      <section class="card" id="cardPlacement">
         <div class="card-header">
           <div>
-            <h2>2. 라벨 배치</h2>
-            <span class="card-caption">페이지별 2×3 레이아웃에 PDF를 배치합니다.</span>
+            <h2>3. 라벨 배치</h2>
+            <span class="card-caption">
+              선택한 레이아웃(2×3 / 2×4)에 페이지별로 라벨을 배치합니다. (드래그 & 드롭, 클릭 이동)
+            </span>
           </div>
-          <button id="layoutTipBtn" type="button" class="icon-button small" title="배치 팁">
-            ?
-          </button>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" class="card-toggle-btn" data-target="cardPlacement">
+              <span class="toggle-icon">▼</span>
+            </button>
+            <button id="layoutTipBtn" type="button" class="icon-button small" title="배치 팁">
+              ?
+            </button>
+          </div>
         </div>
+        <div class="card-body">
 
         <!-- 페이지 스트립 네비게이터 -->
         <div class="layout-strip-header">
           <div class="layout-title-group">
-            <div class="layout-title-main">LS-3116 페이지 보드</div>
+            <div class="layout-title-main">라벨 페이지 보드</div>
             <div class="layout-title-sub">
-              화면에 최대 4개의 페이지 보드를 보여줍니다. 각 칸에 PDF를 드래그해서 배치할 수 있어요.
+              화면에 최대 4개의 페이지 보드를 보여줍니다. 각 칸에 PDF를 배치하면 LS-3116/LS-3114
+              용지에 맞게 인쇄용 PDF로 합쳐집니다.
             </div>
           </div>
           <div class="page-strip-nav">
             <button id="pageStripPrev" class="icon-button small" type="button" title="이전 페이지 그룹">
-                ◀
+              ◀
             </button>
             <span id="pageStripRange" class="page-strip-range">1–1 / 1</span>
             <button id="pageStripNext" class="icon-button small" type="button" title="다음 페이지 그룹">
-                ▶
+              ▶
             </button>
-            </div>
+          </div>
         </div>
 
-        <!-- 페이지 보드들 + 페이지 추가 버튼 -->
         <div class="page-strip-wrapper">
-            <div id="pageStrip" class="page-strip"></div>
+          <div id="pageStrip" class="page-strip"></div>
 
-            <!-- 세련된 동그란 + 버튼 (페이지 보드 오른쪽, 세로 가운데 정렬) -->
-            <button
-                id="addPageBtn"
-                class="page-add-button"
-                type="button"
-                title="페이지 추가"
-            >
+          <button
+            id="addPageBtn"
+            class="page-add-button"
+            type="button"
+            title="페이지 추가"
+          >
             +
-            </button>
+          </button>
         </div>
 
-<div id="selectedFileInfo" class="selected-file-label">
-  선택된 파일: 없음 (페이지 보드에서 파일이 들어간 슬롯을 클릭해서 선택)
-</div>
-
+        <div id="selectedFileInfo" class="selected-file-label">
+          선택된 파일: 없음 (페이지 보드에서 파일이 들어간 슬롯을 클릭해서 선택)
+        </div>
+        </div>
       </section>
 
-      <!-- 3. 오프셋 설정 & PDF 생성 -->
-      <section class="card">
+      <!-- 오프셋 & PDF 생성 -->
+      <section class="card" id="cardOffset">
         <div class="card-header">
-          <h2>3. 오프셋 & PDF 생성</h2>
-          <span class="card-caption">프리셋으로 기본값을 맞추고, 필요하면 세부 오프셋으로 미세 조정하세요.</span>
+          <div>
+            <h2>4. 오프셋 & PDF 생성</h2>
+            <span class="card-caption">
+              프리셋으로 기본값을 맞추고, 필요하면 세부 오프셋과 스케일 모드를 조정한 뒤 PDF를 생성하세요.
+            </span>
+          </div>
+          <button type="button" class="card-toggle-btn" data-target="cardOffset">
+            <span class="toggle-icon">▼</span>
+          </button>
+        </div>
+        <div class="card-body">
+
+        <!-- 스케일 모드 (위로 이동됨) -->
+        <div class="offset-section" style="margin-bottom: 16px;">
+          <div class="offset-section-title">스케일 모드</div>
+          <div class="offset-section-grid">
+            <div class="field field-full">
+              <label class="radio-label">
+                <input type="radio" name="scaleMode" value="original" checked />
+                <span>원본 크기 유지 (텍스트/바코드 크기 우선)</span>
+              </label>
+            </div>
+            <div class="field field-full">
+              <label class="radio-label">
+                <input type="radio" name="scaleMode" value="fitWidth" />
+                <span>라벨 가로폭에 맞게 비율 유지</span>
+              </label>
+            </div>
+            <div class="field field-full">
+              <label class="checkbox-label">
+                <input type="checkbox" id="clipToSlot" />
+                <span>슬롯 밖으로 튀어나가지 않도록 자동 축소 (안전 모드)</span>
+              </label>
+            </div>
+          </div>
         </div>
 
+        <!-- 프리셋 / 아코디언 -->
         <div class="offset-row">
           <div class="offset-row-left">
             <label class="field-label">오프셋 프리셋</label>
-            <select id="offsetPreset" class="select">
-              <option value="tracx">트랙스로지스</option>
-              <option value="shopee">쇼피SLS</option>
-            </select>
+            <div class="preset-buttons">
+              <button id="presetNone" type="button" class="btn-preset">
+                프리셋 없음
+              </button>
+              <button id="presetTracx" type="button" class="btn-preset">
+                트랙스로지스
+              </button>
+              <button id="presetShopee" type="button" class="btn-preset">
+                쇼피 SLS
+              </button>
+            </div>
+            <!-- Preset Status Text Removed -->
           </div>
           <div class="offset-row-right">
             <button id="toggleOffsetDetails" type="button" class="btn-offset-toggle">
-              세부 오프셋 (고급) 펼치기 ▾
+              세부 오프셋 (고급) 펼치기 ▸
             </button>
           </div>
         </div>
 
-        <!-- 아코디언: 세부 오프셋 -->
+        <!-- 세부 오프셋 (아코디언) -->
         <div id="offsetDetails" class="offset-details" style="display:none;">
-          <div class="offset-section">
-            <div class="offset-section-title">전체 오프셋 (A4 기준, mm)</div>
-            <div class="offset-section-grid">
-              <div class="field">
-                <label for="sheetOffsetX" class="field-label">전체 X (가로)</label>
-                <input type="number" id="sheetOffsetX" class="input" step="0.1" value="0" />
-                <span class="field-hint">+ 오른쪽 / - 왼쪽</span>
+          
+          <!-- 2열 그리드로 전체 오프셋 & 칸 기본 오프셋 배치 -->
+          <div class="offset-grid-2col">
+            <!-- 전체 오프셋 -->
+            <div class="offset-section">
+              <div class="offset-section-title">전체 오프셋 (A4 기준, mm)</div>
+              <div class="offset-section-grid-simple">
+                <div class="field">
+                  <label for="sheetOffsetX" class="field-label">전체 X (가로)</label>
+                  <input type="number" id="sheetOffsetX" class="input" step="0.1" value="0" />
+                  <span class="field-hint">+ 오른쪽 / - 왼쪽</span>
+                </div>
+                <div class="field">
+                  <label for="sheetOffsetY" class="field-label">전체 Y (세로)</label>
+                  <input type="number" id="sheetOffsetY" class="input" step="0.1" value="0" />
+                  <span class="field-hint">+ 위쪽 / - 아래쪽</span>
+                </div>
               </div>
-              <div class="field">
-                <label for="sheetOffsetY" class="field-label">전체 Y (세로)</label>
-                <input type="number" id="sheetOffsetY" class="input" step="0.1" value="0" />
-                <span class="field-hint">+ 위쪽 / - 아래쪽</span>
-              </div>
-              <div class="field field-full">
-                <label class="checkbox-label">
-                  <input type="checkbox" id="showGuide" unchecked />
-                  <span>가이드 레이아웃 표시 (라벨 테두리)</span>
-                </label>
+            </div>
+
+            <!-- 칸 기본 오프셋 -->
+            <div class="offset-section">
+              <div class="offset-section-title">칸 기본 오프셋 & 축소</div>
+              <div class="offset-section-grid-simple">
+                <div class="field">
+                  <label for="bulkOffsetX" class="field-label">X (mm)</label>
+                  <input type="number" id="bulkOffsetX" class="input" step="0.1" value="0" />
+                  <span class="field-hint">+ 오른쪽 / - 왼쪽</span>
+                </div>
+                <div class="field">
+                  <label for="bulkOffsetY" class="field-label">Y (mm)</label>
+                  <input type="number" id="bulkOffsetY" class="input" step="0.1" value="0" />
+                  <span class="field-hint">+ 위쪽 / - 아래쪽</span>
+                </div>
+                <div class="field">
+                  <label for="bulkScale" class="field-label">축소 (%)</label>
+                  <input type="number" id="bulkScale" class="input" step="1" value="95" />
+                  <span class="field-hint">권장: 50 ~ 120</span>
+                </div>
+                <div class="field field-full">
+                  <button type="button" id="applyBulkOffset" class="btn-primary small">
+                    모든 칸에 X/Y/축소 적용
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="offset-section">
-            <div class="offset-section-title">칸 기본 오프셋 & 축소 (6칸 전체에 일괄 적용)</div>
-            <div class="offset-section-grid">
-              <div class="field">
-                <label for="bulkSlotOffsetX" class="field-label">X (mm)</label>
-                <input type="number" id="bulkSlotOffsetX" class="input" step="0.1" value="0" />
-                <span class="field-hint">+ 오른쪽 / - 왼쪽</span>
-              </div>
-              <div class="field">
-                <label for="bulkSlotOffsetY" class="field-label">Y (mm)</label>
-                <input type="number" id="bulkSlotOffsetY" class="input" step="0.1" value="0" />
-                <span class="field-hint">+ 위쪽 / - 아래쪽</span>
-              </div>
-              <div class="field">
-                <label for="bulkSlotScale" class="field-label">축소 (%)</label>
-                <input type="number" id="bulkSlotScale" class="input" step="1" value="95" />
-                <span class="field-hint">권장: 50 ~ 120</span>
-              </div>
-              <div class="field field-full">
-                <button type="button" id="applyBulkSlotOffsetBtn" class="btn-secondary small">
-                  모든 칸에 X/Y/축소 적용
-                </button>
-              </div>
-            </div>
-          </div>
-
+          <!-- 칸별 오프셋 -->
           <div class="offset-section">
             <div class="offset-section-title">칸별 오프셋 & 축소</div>
-            <span class="card-caption"> (트랙스로지스) 복수 라벨 반영 - 오른쪽 라벨 왼쪽 이동 X: -100, 아래 라벨 위로 이동 Y: 95 </span>
-            <div class="slot-offset-grid">
-              <!-- 6칸 반복 -->
-              <div class="slot-offset-item">
-                <div class="slot-offset-title">칸 1</div>
-                <div class="slot-offset-fields">
-                  <label>X <input type="number" id="slotOffsetX0" class="input" step="0.1" value="0" /></label>
-                  <label>Y <input type="number" id="slotOffsetY0" class="input" step="0.1" value="0" /></label>
-                  <label>축소% <input type="number" id="slotScale0" class="input" step="1" value="95" /></label>
-                </div>
-              </div>
-
-              <div class="slot-offset-item">
-                <div class="slot-offset-title">칸 2</div>
-                <div class="slot-offset-fields">
-                  <label>X <input type="number" id="slotOffsetX1" class="input" step="0.1" value="0" /></label>
-                  <label>Y <input type="number" id="slotOffsetY1" class="input" step="0.1" value="0" /></label>
-                  <label>축소% <input type="number" id="slotScale1" class="input" step="1" value="95" /></label>
-                </div>
-              </div>
-
-              <div class="slot-offset-item">
-                <div class="slot-offset-title">칸 3</div>
-                <div class="slot-offset-fields">
-                  <label>X <input type="number" id="slotOffsetX2" class="input" step="0.1" value="0" /></label>
-                  <label>Y <input type="number" id="slotOffsetY2" class="input" step="0.1" value="0" /></label>
-                  <label>축소% <input type="number" id="slotScale2" class="input" step="1" value="95" /></label>
-                </div>
-              </div>
-
-              <div class="slot-offset-item">
-                <div class="slot-offset-title">칸 4</div>
-                <div class="slot-offset-fields">
-                  <label>X <input type="number" id="slotOffsetX3" class="input" step="0.1" value="0" /></label>
-                  <label>Y <input type="number" id="slotOffsetY3" class="input" step="0.1" value="0" /></label>
-                  <label>축소% <input type="number" id="slotScale3" class="input" step="1" value="95" /></label>
-                </div>
-              </div>
-
-              <div class="slot-offset-item">
-                <div class="slot-offset-title">칸 5</div>
-                <div class="slot-offset-fields">
-                  <label>X <input type="number" id="slotOffsetX4" class="input" step="0.1" value="0" /></label>
-                  <label>Y <input type="number" id="slotOffsetY4" class="input" step="0.1" value="0" /></label>
-                  <label>축소% <input type="number" id="slotScale4" class="input" step="1" value="95" /></label>
-                </div>
-              </div>
-
-              <div class="slot-offset-item">
-                <div class="slot-offset-title">칸 6</div>
-                <div class="slot-offset-fields">
-                  <label>X <input type="number" id="slotOffsetX5" class="input" step="0.1" value="0" /></label>
-                  <label>Y <input type="number" id="slotOffsetY5" class="input" step="0.1" value="0" /></label>
-                  <label>축소% <input type="number" id="slotScale5" class="input" step="1" value="95" /></label>
-                </div>
-              </div>
+            <span class="card-caption">
+              (예: 복수 라벨 반영 시 오른쪽 라벨 X:-100, 아래 라벨 Y:95 등으로 미세 조정)
+            </span>
+            <div id="slotOffsetContainer" class="slot-offset-grid">
+              <!-- JS에서 동적으로 생성 -->
             </div>
           </div>
         </div>
 
+        <!-- 생성 -->
         <div class="generate-row">
           <button id="generateBtn" disabled class="btn-primary">
             PDF 생성
@@ -276,30 +344,47 @@
           <a
             id="downloadLink"
             href="#"
-            download="LS-3116-labeled.pdf"
+            download="LS-labels.pdf"
             class="btn-outline"
             style="display:none;"
           >
             생성된 PDF 다운로드
           </a>
         </div>
+        
+        <!-- 가이드 레이아웃 표시 (아래로 이동됨) -->
+        <div class="guide-option" style="margin-top: 12px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="showGuide" />
+            <span>가이드 레이아웃 표시 (라벨 테두리)</span>
+          </label>
+        </div>
+
         <div id="msg"></div>
+        </div>
       </section>
 
-      <!-- 4. 미리보기 -->
-      <section class="card">
+      <!-- 미리보기 -->
+      <section class="card" id="cardPreview">
         <div class="card-header">
-          <h2>4. 미리보기</h2>
-          <span class="card-caption">생성된 PDF를 A4 비율로 미리 확인하세요.</span>
+          <div>
+            <h2>5. 미리보기</h2>
+            <span class="card-caption">생성된 A4 PDF를 화면에서 미리 확인하세요.</span>
+          </div>
+          <button type="button" class="card-toggle-btn" data-target="cardPreview">
+            <span class="toggle-icon">▼</span>
+          </button>
         </div>
-        <div class="preview-wrapper">
-          <iframe id="pdfPreview" class="preview-frame"></iframe>
+        <div class="card-body">
+          <div class="preview-wrapper" style="height:1200px;">
+            <iframe id="pdfPreview" class="preview-frame"></iframe>
+          </div>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- 도움말 모달 (전체 + 배치 팁 포함) -->
+  <!-- 도움말 모달 -->
   <div id="helpModal" class="modal hidden">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
@@ -308,14 +393,18 @@
         <button id="helpClose" class="icon-button small">✕</button>
       </div>
       <div class="modal-body">
-        <p>이 도구는 Formtec LS-3116 라벨 용지(2×3)에 PDF를 정확한 위치로 배치하기 위한 툴입니다.</p>
+        <p>
+          이 도구는 Formtec LS-3116(2×3), LS-3114(2×4) 등 라벨 용지에
+          개별 PDF 패킹라벨을 정확한 위치로 배치하기 위한 툴입니다.
+        </p>
         <ul>
-          <li>PDF를 업로드하면, 빈 칸부터 자동으로 순서대로 배정됩니다.</li>
-          <li>각 페이지는 2×3 레이아웃이며, 한 화면에 최대 4페이지의 보드가 표시됩니다.</li>
-          <li>칸을 드래그 & 드랍해서 같은 페이지 또는 현재 화면에 보이는 다른 페이지의 칸으로 이동 / 교환할 수 있습니다.</li>
-          <li>페이지 보드에서 파일이 들어간 칸을 클릭해 선택한 뒤, 빈 칸을 클릭하거나 드래그 &amp; 드랍으로 다른 칸으로 이동/교환할 수 있습니다. (채워진 칸끼리의 교환은 드래그 &amp; 드랍으로만 가능합니다.)</li>
-          <li>+ 페이지 버튼으로 새 페이지를 추가할 수 있습니다.</li>
-          <li>오프셋 프리셋(트랙스로지스 / 쇼피SLS)을 사용한 뒤, 세부 오프셋 (고급)에서 칸별 위치·축소를 미세 조정하세요.</li>
+          <li>1단계에서 라벨 용지를 선택한 다음, 2단계에서 PDF를 업로드합니다.</li>
+          <li>여러 페이지로 된 PDF도 페이지 단위로 자동 분리되어 슬롯에 배정됩니다.</li>
+          <li>라벨 배치 보드에서 칸을 드래그 & 드롭하여 같은 페이지 또는 다른 페이지로 이동/교환할 수 있습니다.</li>
+          <li>채워진 칸끼리의 교환은 드래그 & 드롭으로만 가능하며, 실수로 클릭 이동되지 않도록 설계되어 있습니다.</li>
+          <li>오프셋 프리셋(트랙스로지스 / 쇼피 SLS)을 적용한 후, 스케일 모드와 세부 오프셋으로 인쇄 위치를 미세 조정할 수 있습니다.</li>
+          <li>“원본 크기 유지” 모드를 사용하면 텍스트/바코드 크기를 거의 그대로 유지하면서 라벨 칸에 배치할 수 있습니다.</li>
+          <li>“슬롯 밖으로 튀어나가지 않도록 자동 축소” 옵션을 켜면 라벨 칸을 넘지 않도록 스케일이 자동으로 제한됩니다.</li>
         </ul>
       </div>
     </div>
